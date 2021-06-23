@@ -86,13 +86,13 @@ jobs:
           done
 
       - name: Setup Python
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         uses: actions/setup-python@v2.2.1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Checkout ${{ env.TO_REPO }} repo
-        if: steps.related-changed-files.output.RELATED_FILES || steps.related-deleted-files.output.RELATED_DELETED
+        if: steps.changed-files.outputs.FILES || steps.deleted-files.outputs.DELETED
         uses: actions/checkout@v2
         with:
           repository: ${{ env.TO_REPO }}
@@ -101,7 +101,7 @@ jobs:
           path: sc-data
 
       - name: Cache pip
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -109,34 +109,34 @@ jobs:
           restore-keys: ${{ runner.os }}-pip-
 
       - name: Install bilara-data-integrity Python dependencies
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         run: pip install -r requirements.txt
         working-directory: bilara-data-integrity
 
       - name: Set up sutta-processor
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         run: pip install -e .
         working-directory: bilara-data-integrity
 
       - name: Install bilara-data Python dependencies
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         run: pip install -r requirements.txt
         working-directory: bilara-data-integrity/bilara-data/nilakkhana
 
       - name: Run Nilakkhana transform only on changed files
-        if: steps.related-changed-files.output.RELATED_FILES
-        run: python nilakkhana/per_file_parse.py -f ${{ steps.related-changed-files.output.RELATED_FILES }}
+        if: steps.changed-files.outputs.FILES
+        run: python nilakkhana/per_file_parse.py -f ${{ steps.changed-files.outputs.FILES }}
         working-directory: bilara-data-integrity/bilara-data
 
       - name: Run sutta-processor
-        if: steps.related-changed-files.output.RELATED_FILES
-        run: sutta-processor -c check_all_changes_config.yaml -f ${{ steps.related-changed-files.output.RELATED_FILES }}
+        if: steps.changed-files.outputs.FILES
+        run: sutta-processor -c check_all_changes_config.yaml -f ${{ steps.changed-files.outputs.FILES }}
         working-directory: bilara-data-integrity
 
       - name: Copy changed files to the target directory
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         run: |
-          for f in ${{ steps.related-changed-files.output.RELATED_FILES }}
+          for f in ${{ steps.changed-files.outputs.FILES }}
           do
             mkdir -p $TO_REPO_TARGET_FOLDER/$(dirname $f)
             cp ../bilara-data-integrity/bilara-data/$f $TO_REPO_TARGET_FOLDER/$(dirname $f)/
@@ -144,11 +144,11 @@ jobs:
         working-directory: sc-data
 
       - name: Remove deleted files from ${{ env.TO_REPO }}
-        if: steps.related-deleted-files.output.RELATED_DELETED
+        if: steps.deleted-files.outputs.DELETED
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          for f in ${{ steps.related-deleted-files.output.RELATED_DELETED }}
+          for f in ${{ steps.deleted-files.outputs.DELETED }}
           do
             git rm --ignore-unmatch $TO_REPO_TARGET_FOLDER/$f
           done
@@ -157,7 +157,7 @@ jobs:
         working-directory: sc-data
 
       - name: Push changed files to ${{ env.TO_REPO }}
-        if: steps.related-changed-files.output.RELATED_FILES
+        if: steps.changed-files.outputs.FILES
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
