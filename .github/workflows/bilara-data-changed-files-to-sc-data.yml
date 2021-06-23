@@ -143,18 +143,18 @@ jobs:
           done
         working-directory: sc-data
 
-      - name: Remove deleted files from ${{ env.TO_REPO }}
-        if: steps.deleted-files.outputs.DELETED
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          for f in ${{ steps.deleted-files.outputs.DELETED }}
-          do
-            git rm --ignore-unmatch $TO_REPO_TARGET_FOLDER/$f
-          done
-          git commit -m "Updating sc-bilara-data from bilara-data with deleted files."
-          git push
-        working-directory: sc-data
+#      - name: Remove deleted files from ${{ env.TO_REPO }}
+#        if: steps.deleted-files.outputs.DELETED
+#        run: |
+#          git config user.name github-actions
+#          git config user.email github-actions@github.com
+#          for f in ${{ steps.deleted-files.outputs.DELETED }}
+#          do
+#            git rm --ignore-unmatch $TO_REPO_TARGET_FOLDER/$f
+#          done
+#          git commit -m "Updating sc-bilara-data from bilara-data with deleted files."
+#          git push
+#        working-directory: sc-data
 
       - name: Push changed files to ${{ env.TO_REPO }}
         if: steps.changed-files.outputs.FILES
