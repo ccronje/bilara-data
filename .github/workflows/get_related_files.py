@@ -23,9 +23,9 @@ from pathlib import Path
 from typing import List
 
 # Set up argparse to get changed or deleted files passed to the module
-# arg_parser = argparse.ArgumentParser()
-# arg_parser.add_argument('-f', '--files', required=True, type=Path, nargs='*')
-# args = arg_parser.parse_args()
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('-f', '--files', required=True, type=Path, nargs='*')
+args = arg_parser.parse_args()
 
 DIRECTORY_MAPPINGS = {'comment': ['root'], 'html': ['root'], 'reference': [],
                       'root': ['html', 'translation', 'variant'], 'translation': ['html'], 'variant': ['root']}
@@ -65,9 +65,9 @@ def _get_related_directories(files: List[Path]) -> dict:
     return file_dir_mappings
 
 
-def get_related_files(*files: str) -> str:
+def get_related_files(files: List[Path]) -> str:
     """Get the paths to the related files provided by the Action after getting the directories they live in."""
-    file_dir_mappings = _get_related_directories(files=[Path(f) for f in files])
+    file_dir_mappings = _get_related_directories(files=files)
     related_files = []
     for file_id, related_dirs in file_dir_mappings.items():
         for related_dir in related_dirs:
@@ -80,11 +80,9 @@ def get_related_files(*files: str) -> str:
     # how they will be converted when I return the values.
     all_files = [str(f) for f in files]
     all_files.extend(related_files)
-    # print(' '.join(all_files))
-    return ' '.join(all_files)
+    print(' '.join(all_files))
+    # return ' '.join(all_files)
 
 
 if __name__ == '__main__':
-    args = sys.argv
-    # get_related_files(files=args.files)
-    globals()[args[1]](*args[2:])
+    get_related_files(files=args.files)
