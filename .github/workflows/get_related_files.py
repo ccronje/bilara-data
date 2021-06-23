@@ -16,15 +16,16 @@ bilara_check_variant     ->  variant and root
 
 import argparse
 import os
+import sys
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
 from typing import List
 
 # Set up argparse to get changed or deleted files passed to the module
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('-f', '--files', required=True, type=Path, nargs='*')
-args = arg_parser.parse_args()
+# arg_parser = argparse.ArgumentParser()
+# arg_parser.add_argument('-f', '--files', required=True, type=Path, nargs='*')
+# args = arg_parser.parse_args()
 
 DIRECTORY_MAPPINGS = {'comment': ['root'], 'html': ['root'], 'reference': [],
                       'root': ['html', 'translation', 'variant'], 'translation': ['html'], 'variant': ['root']}
@@ -64,7 +65,7 @@ def _get_related_directories(files: List[Path]) -> dict:
     return file_dir_mappings
 
 
-def get_related_files(files: List[Path]) -> None:
+def get_related_files(files: List[Path]) -> str:
     """Get the paths to the related files provided by the Action after getting the directories they live in."""
     file_dir_mappings = _get_related_directories(files=files)
     related_files = []
@@ -79,8 +80,11 @@ def get_related_files(files: List[Path]) -> None:
     # how they will be converted when I return the values.
     all_files = [str(f) for f in files]
     all_files.extend(related_files)
-    print(' '.join(all_files))
+    # print(' '.join(all_files))
+    return ' '.join(all_files)
 
 
 if __name__ == '__main__':
-    get_related_files(files=args.files)
+    args = sys.argv
+    # get_related_files(files=args.files)
+    globals()[args[1]](*args[2:])
