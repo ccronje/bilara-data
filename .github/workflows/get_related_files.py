@@ -31,14 +31,14 @@ DIRECTORY_MAPPINGS = {'comment': ['root'], 'html': ['root'], 'reference': [],
                       'root': ['html', 'translation', 'variant'], 'translation': ['html'], 'variant': ['root']}
 
 
-def _get_related_directories(files: List[Path]) -> dict:
+def _get_related_directories(file_paths: List[Path]) -> dict:
     """Based on the changed or deleted files provided by the Action,
     find the directories that hold the related files."""
     # Will create a dictionary where the key is the file ID, and the value is a list of directories,
     # like {'an1.616-627': ['html'], 'mn1': ['html', 'translation']}
     file_dir_mappings = defaultdict(list)
 
-    for file in files:
+    for file in file_paths:
         # Like html, root, translation, etc.
         bilara_data_dir = file.parts[0]
         # Like an1.1-10_reference
@@ -65,24 +65,23 @@ def _get_related_directories(files: List[Path]) -> dict:
     return file_dir_mappings
 
 
-def get_related_files(files: List[Path]) -> str:
+def get_related_files(file_paths: List[Path]) -> None:
     """Get the paths to the related files provided by the Action after getting the directories they live in."""
-    file_dir_mappings = _get_related_directories(files=files)
-    related_files = []
+    file_dir_mappings = _get_related_directories(file_paths=file_paths)
+    related_file_paths = []
     for file_id, related_dirs in file_dir_mappings.items():
         for related_dir in related_dirs:
             for root, sub_dirs, files in os.walk(related_dir):
                 for file in files:
                     if file_id == file.split('_')[0]:
-                        related_files.append(os.path.join(root, file))
+                        related_file_paths.append(os.path.join(root, file))
 
     # Convert from Path objects to strings since I don't know
     # how they will be converted when I return the values.
-    all_files = [str(f) for f in files]
-    all_files.extend(related_files)
+    all_files = [str(f) for f in file_paths]
+    all_files.extend(related_file_paths)
     print(' '.join(all_files))
-    # return ' '.join(all_files)
 
 
 if __name__ == '__main__':
-    get_related_files(files=args.files)
+    get_related_files(file_paths=args.files)
