@@ -62,9 +62,8 @@ jobs:
         id: related-changed-files
         # run : echo ::set-output name=RELATED_FILES::$(python -c .github/workflows/get_related_files.py --files ${{ steps.changed-files.outputs.FILES }})
         run: |
-          files=$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
-          echo $files
-          echo ::set-output name=RELATED_FILES::$files
+          pwd
+          echo ::set-output name=RELATED_FILES::$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
         working-directory: bilara-data-integrity/bilara-data
 
       - name: Get deleted files
@@ -79,7 +78,7 @@ jobs:
         working-directory: bilara-data-integrity/bilara-data
 
       - name: Print the related files
-        if: steps.related-changed-files.output.RELATED_FILES || steps.related-deleted-files.output.RELATED_DELETED
+        if: steps.related-changed-files.outputs.RELATED_FILES
         run: |
           for f in ${{ steps.related_changed_files.output.RELATED_FILES }}
           do
