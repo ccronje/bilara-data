@@ -65,9 +65,9 @@ def _get_related_directories(files: List[Path]) -> dict:
     return file_dir_mappings
 
 
-def get_related_files(*files: Path) -> str:
+def get_related_files(*files: str) -> str:
     """Get the paths to the related files provided by the Action after getting the directories they live in."""
-    file_dir_mappings = _get_related_directories(files=list(files))
+    file_dir_mappings = _get_related_directories(files=[Path(f) for f in files])
     related_files = []
     for file_id, related_dirs in file_dir_mappings.items():
         for related_dir in related_dirs:
