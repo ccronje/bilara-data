@@ -62,6 +62,7 @@ jobs:
         id: related-changed-files
         run: |
           files_string=$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
+          echo $files_string
           files_arr=( $files_string )
           echo $files_arr
           echo ::set-output name=RELATED_FILES::$files_arr
