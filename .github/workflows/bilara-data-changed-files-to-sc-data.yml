@@ -61,8 +61,9 @@ jobs:
         if: steps.changed-files.outputs.FILES
         id: related-changed-files
         run: |
-          files=$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
-          echo ::set-output name=RELATED_FILES::( $files )
+          files_string=$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
+          files_arr=( $files_string )
+          echo ::set-output name=RELATED_FILES::$files_arr
         working-directory: bilara-data-integrity/bilara-data
 
       - name: Get deleted files
