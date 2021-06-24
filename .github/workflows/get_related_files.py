@@ -80,9 +80,10 @@ def get_related_files(file_paths: List[Path]) -> None:
     # how they will be converted when I return the values.
     all_files = [str(f) for f in file_paths]
     all_files.extend(related_file_paths)
-    for f in all_files:
-        print(f)
+    #for f in all_files:
+    #    print(f)
     # print(' '.join(all_files))
+    return all_files
 
 
 if __name__ == '__main__':
