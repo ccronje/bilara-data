@@ -81,7 +81,7 @@ jobs:
       - name: Print the related files
         if: steps.related-changed-files.outputs.RELATED_FILES
         run: |
-          for f in ${{ steps.related-changed-files.output.RELATED_FILES }}
+          for f in ${{ steps.related-changed-files.outputs.RELATED_FILES }}
           do
             echo $f
           done
