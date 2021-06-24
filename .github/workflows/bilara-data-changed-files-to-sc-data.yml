@@ -63,6 +63,7 @@ jobs:
         run: |
           files_string=$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
           files_arr=( $files_string )
+          echo $files_arr
           echo ::set-output name=RELATED_FILES::$files_arr
         working-directory: bilara-data-integrity/bilara-data
 
@@ -80,7 +81,7 @@ jobs:
       - name: Print the related files
         if: steps.related-changed-files.outputs.RELATED_FILES
         run: |
-          for f in ${{ steps.related_changed_files.output.RELATED_FILES }}
+          for f in ${{ steps.related-changed-files.output.RELATED_FILES }}
           do
             echo $f
           done
