@@ -62,6 +62,7 @@ jobs:
         id: related-changed-files
         run: |
           files=$(python .github/workflows/get_related_files.py -f ${{ steps.changed-files.outputs.FILES }})
+          echo $files
           echo ::set-output name=RELATED_FILES::$files
         working-directory: bilara-data-integrity/bilara-data
 
